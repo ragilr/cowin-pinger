@@ -1,14 +1,15 @@
 const axios = require('axios')
 
 
-const iftttWebhookKey = '<IFTTT-KEY>' // Replace value here
-const iftttWebhookName = '<IFTTT-WEBHOOK-NAME>' // Replace value here
-const districtId = '<DISTRICT-ID>'; // Replace value here
-const yourAge = '<YOUR-AGE>'  // Replace value here
+const iftttWebhookKey = 'bIAwzTXiiq_nfmCVUcNwYL' // Replace value here
+const iftttWebhookName = 'vaccine-available' // Replace value here
+const districtId = '565'; // Replace value here
+const yourAge = 50  // Replace value here
 
+const notificationUrl = `https://maker.ifttt.com/trigger/${iftttWebhookName}/with/key/${iftttWebhookKey}`;
 
-const intervalInMs = 600000; // 15 mins interval (in milliseconds)
-const appointmentsListLimit = 2 // Increase/Decrease it based on the amount of information you want in the notification.
+const intervalInMs = 60000; // 15 mins interval (in milliseconds)
+const appointmentsListLimit = 10 // Increase/Decrease it based on the amount of information you want in the notification.
 
 function getDate() {
     const today = new Date();
@@ -23,17 +24,17 @@ const date = getDate();
 
 function pingCowin() {
     axios.get(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${districtId}&date=${date}`).then((result) => {
-        const { centers }= result.data;
+        const { centers } = result.data;
         let isSlotAvailable = false;
         let dataOfSlot = "";
         let appointmentsAvailableCount = 0;
-        if(centers.length) {
+        if (centers.length) {
             centers.forEach(center => {
                 center.sessions.forEach((session => {
-                    if(session.min_age_limit < +yourAge && session.available_capacity > 0) {
+                    if (session.min_age_limit < +yourAge && session.available_capacity > 0) {
                         isSlotAvailable = true
                         appointmentsAvailableCount++;
-                        if(appointmentsAvailableCount <= appointmentsListLimit) {
+                        if (appointmentsAvailableCount <= appointmentsListLimit) {
                             dataOfSlot = `${dataOfSlot}\nSlot for ${session.available_capacity} is available: ${center.name} on ${session.date}`;
                         }
                     }
@@ -42,11 +43,12 @@ function pingCowin() {
 
             dataOfSlot = `${dataOfSlot}\n${appointmentsAvailableCount - appointmentsListLimit} more slots available...`
         }
-        if(isSlotAvailable) {
-            axios.post(`https://maker.ifttt.com/trigger/${iftttWebhookName}/with/key/${iftttWebhookKey}`, { value1: dataOfSlot }).then(() => {
-                console.log('Sent Notification to Phone \nStopping Pinger...')
-                clearInterval(timer);
-            });
+        if (isSlotAvailable) {
+            console.log(notificationUrl);
+            axios.post(notificationUrl, { value1: dataOfSlot }).then(() => {
+                console.log('Sent Notification to Phone ...')
+                // clearInterval(timer);
+            }).catch((error) => console.error(`Error occured while sending notifications Error:${error.message }`));
         }
     }).catch((err) => {
         console.log("Error: " + err.message);
@@ -55,7 +57,6 @@ function pingCowin() {
 
 let pingCount = 0;
 var timer = setInterval(() => {
-    console.clear();
     pingCount += 1;
     pingCowin();
     console.log("Ping Count - ", pingCount);

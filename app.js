@@ -8,7 +8,7 @@ const yourAge = 50  // Replace value here
 
 const notificationUrl = `https://maker.ifttt.com/trigger/${iftttWebhookName}/with/key/${iftttWebhookKey}`;
 
-const intervalInMs = 60000; // 15 mins interval (in milliseconds)
+const intervalInMs = 10000; // 15 mins interval (in milliseconds)
 const appointmentsListLimit = 10 // Increase/Decrease it based on the amount of information you want in the notification.
 
 function getDate() {
@@ -44,7 +44,6 @@ function pingCowin() {
             dataOfSlot = `${dataOfSlot}\n${appointmentsAvailableCount - appointmentsListLimit} more slots available...`
         }
         if (isSlotAvailable) {
-            console.log(notificationUrl);
             axios.post(notificationUrl, { value1: dataOfSlot }).then(() => {
                 console.log('Sent Notification to Phone ...')
                 // clearInterval(timer);
@@ -61,3 +60,18 @@ var timer = setInterval(() => {
     pingCowin();
     console.log("Ping Count - ", pingCount);
 }, intervalInMs);
+
+
+
+var http = require('http');
+var fs = require('fs');
+var path = require('path');
+
+http.createServer(function (request, response) {
+
+   console.log('request starting for ');
+   console.log(request);
+
+}).listen(process.env.PORT || 5000);
+
+console.log('Server running at http://127.0.0.1:5000/');

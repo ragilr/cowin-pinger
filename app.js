@@ -8,7 +8,7 @@ const yourAge = 50  // Replace value here
 
 const notificationUrl = `https://maker.ifttt.com/trigger/${iftttWebhookName}/with/key/${iftttWebhookKey}`;
 
-const intervalInMs = 10000; // 15 mins interval (in milliseconds)
+const intervalInMs = 1000000; // 15 mins interval (in milliseconds)
 const appointmentsListLimit = 10 // Increase/Decrease it based on the amount of information you want in the notification.
 
 function getDate() {

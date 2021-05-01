@@ -3,7 +3,7 @@ const axios = require('axios')
 
 const iftttWebhookKey = 'bIAwzTXiiq_nfmCVUcNwYL' // Replace value here
 const iftttWebhookName = 'vaccine-available' // Replace value here
-const districtId = '565'; // Replace value here
+const districtId = '305'; // Replace value here
 const yourAge = 50  // Replace value here
 
 const notificationUrl = `https://maker.ifttt.com/trigger/${iftttWebhookName}/with/key/${iftttWebhookKey}`;
